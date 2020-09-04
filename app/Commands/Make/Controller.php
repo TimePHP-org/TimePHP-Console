@@ -36,14 +36,34 @@ class Controller extends Command
         } else {
             $controllerName = ucfirst($tmpName) . "Controller";
 
-            if(file_exists($controllerName.".php")) {
+            if(file_exists($this->getControllerPath().$controllerName.".php")) {
                 $this->error("This Controller already exists");
             } else {                
-                $controllerContent = str_replace("%Controller%", $controllerName, file_get_contents(getcwd() . DIRECTORY_SEPARATOR . "app" . DIRECTORY_SEPARATOR . "Templates" . DIRECTORY_SEPARATOR . "Controller.template"));
+                $controllerContent = str_replace("%Controller%", $controllerName, File::get($this->getTemplatePath()."Controller.template"));
                 
-                File::put(getcwd() . DIRECTORY_SEPARATOR . $controllerName . ".php", $controllerContent);
-                $this->info("Done!");
+                File::put($this->getControllerPath().$controllerName . ".php", $controllerContent);
+                $this->task("", fn() => true );
             }
         }
+    }
+
+    /**
+     * Get controllers path
+     *
+     * @return string
+     */
+    private function getControllerPath(): string
+    {
+        return getcwd().DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."App".DIRECTORY_SEPARATOR."Bundle".DIRECTORY_SEPARATOR."Controllers".DIRECTORY_SEPARATOR.PHP_EOL;
+    }
+
+    /**
+     * Get templates path
+     *
+     * @return string
+     */
+    private function getTemplatePath(): string 
+    {
+        return getcwd().DIRECTORY_SEPARATOR."bin".DIRECTORY_SEPARATOR."templates".DIRECTORY_SEPARATOR.PHP_EOL;
     }
 }
