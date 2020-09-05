@@ -29,6 +29,6 @@ class Test extends Command
      */
     public function handle()
     {
-        echo File::get(getcwd()."/app/Templates/Controller.template");
+        $this->line("<error>bonjour</error>test");
     }
 }

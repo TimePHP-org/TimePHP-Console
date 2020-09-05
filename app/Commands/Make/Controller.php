@@ -12,7 +12,7 @@ class Controller extends Command
      *
      * @var string
      */
-    protected $signature = 'make:controller {name : Name of the controller}';
+    protected $signature = 'make:controller {--name= : Name of the controller}';
 
     /**
      * The description of the command.
@@ -28,21 +28,26 @@ class Controller extends Command
      */
     public function handle()
     {
-        $argName = strtolower($this->argument('name'));
+        $name = $this->option('name');
+        while ($name === null || empty($name)) {
+            $name = $this->ask("Enter the ame of the controller");
+        }
+
+        $argName = strtolower($name);
         $tmpName = str_replace("controller", "", $argName);
 
-        if(empty($tmpName)) {
-            $this->error("Invalid controller name");
+        if (empty($tmpName)) {
+            $this->line("Invalid controller name : <error>FAILED !</error>");
         } else {
             $controllerName = ucfirst($tmpName) . "Controller";
 
-            if(file_exists($this->getControllerPath().$controllerName.".php")) {
-                $this->error("This Controller already exists");
-            } else {                
-                $controllerContent = str_replace("%Controller%", $controllerName, File::get($this->getTemplatePath()."Controller.template"));
-                
-                File::put($this->getControllerPath().$controllerName . ".php", $controllerContent);
-                $this->task("", fn() => true );
+            if (file_exists($this->getControllerPath() . DIRECTORY_SEPARATOR . $controllerName . ".php")) {
+                $this->line("This controller already exists : <error>FAILED !</error>");
+            } else {
+                $controllerContent = str_replace("%Controller%", $controllerName, File::get($this->getTemplatePath() . DIRECTORY_SEPARATOR . "Controller.template"));
+
+                File::put($this->getControllerPath() . DIRECTORY_SEPARATOR . $controllerName . ".php", $controllerContent);
+                $this->line("Controller created successfully : <info>OK !</info>");
             }
         }
     }
@@ -54,7 +59,7 @@ class Controller extends Command
      */
     private function getControllerPath(): string
     {
-        return getcwd().DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."App".DIRECTORY_SEPARATOR."Bundle".DIRECTORY_SEPARATOR."Controllers".DIRECTORY_SEPARATOR.PHP_EOL;
+        return str_replace("/bin/bios/app/Commands/Make", "", str_replace("phar://", "", __DIR__)) . DIRECTORY_SEPARATOR . "App" . DIRECTORY_SEPARATOR . "Bundle" . DIRECTORY_SEPARATOR . "Controllers";
     }
 
     /**
@@ -62,8 +67,8 @@ class Controller extends Command
      *
      * @return string
      */
-    private function getTemplatePath(): string 
+    private function getTemplatePath(): string
     {
-        return getcwd().DIRECTORY_SEPARATOR."bin".DIRECTORY_SEPARATOR."templates".DIRECTORY_SEPARATOR.PHP_EOL;
+        return str_replace("/bin/bios/app/Commands/Make", "", str_replace("phar://", "", __DIR__)) . DIRECTORY_SEPARATOR . "bin" . DIRECTORY_SEPARATOR . "templates";
     }
 }
