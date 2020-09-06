@@ -20,7 +20,9 @@ Laravel Zero was created by, and is maintained by [Nuno Maduro](https://github.c
 - Ships with a [Scheduler](https://laravel-zero.com/docs/task-scheduling/) and  a [Standalone Compiler](https://laravel-zero.com/docs/build-a-standalone-application/).
 - Integration with [Collision](https://github.com/nunomaduro/collision) - Beautiful error reporting
 
+
 ------
+
 
 ## Documentation
 
