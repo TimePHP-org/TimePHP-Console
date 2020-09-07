@@ -8,27 +8,38 @@ use LaravelZero\Framework\Commands\Command;
 
 class Test extends Command
 {
-    /**
-     * The signature of the command.
-     *
-     * @var string
-     */
-    protected $signature = 'test';
+	/**
+   * The signature of the command.
+   *
+   * @var string
+   */
+ 	protected $signature = 'test';
 
-    /**
-     * The description of the command.
-     *
-     * @var string
-     */
-    protected $description = 'Test comand';
+	/**
+   * The description of the command.
+   *
+   * @var string
+   */
+	protected $description = 'Test comand';
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle()
-    {
-        $this->line("<error>bonjour</error>test");
-    }
+	/**
+   * Execute the console command.
+   *
+   * @return mixed
+   */
+	public function handle()
+	{
+      $primary = false;
+      $fields = ["primary", "type", "nullable", "unique", "default"];
+      $data = [];
+      while(true){
+         $newField = $this->ask("Add a field (default: yes)") ?? "yes";
+         if($newField === "yes"){
+            $this->info($newField);
+         } else {
+            break;
+         }
+      }
+
+   }
 }

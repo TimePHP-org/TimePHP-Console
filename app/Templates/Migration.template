@@ -1,0 +1,47 @@
+<?php
+
+namespace Database\Migration;
+
+use Database\Migration\Foundation\Migration;
+use Illuminate\Database\Capsule\Manager as Capsule;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class %Migration% extends Migration {
+	
+
+   /**
+    * Create the correspondong table in the database
+    *
+    * @return void
+    */
+   public function up(): void {
+      if (!Capsule::schema()->hasTable("%TableName%")) {
+         Capsule::schema()->create('%TableName%', function (Blueprint $table) {
+            $table->uuid('uuid');
+            $table->string('username', 50);
+            $table->string('password', 255);
+            $table->text('description')->nullable();
+            $table->unsignedInteger('followers')->default(0);
+            $table->text('github')->nullable();
+            $table->text('instagram')->nullable();
+            $table->text('facebook')->nullable();
+            $table->text('twitter')->nullable();
+            $table->string('role', 50)->default("user");
+            $table->primary("uuid");
+            $table->timestamp('createdAt')->default(Capsule::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updatedAt')->default(Capsule::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
+         });
+         
+      }
+   }
+
+   /**
+    * Drop the corresponding table
+    *
+    * @return void
+    */
+   public function down(): void {
+      Capsule::schema()->dropIfExists('%TableName%');
+   }
+}
