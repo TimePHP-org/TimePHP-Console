@@ -5,20 +5,20 @@ namespace App\Commands\Make;
 use Illuminate\Support\Facades\File;
 use LaravelZero\Framework\Commands\Command;
 
-class Migration extends Command {
+class Entity extends Command {
    /**
     * The signature of the command.
     *
     * @var string
     */
-   protected $signature = 'make:migration {--table= : Name of the table you want to create}';
+   protected $signature = 'make:entity {--table= : Name of the table you want to create}';
 
    /**
     * The description of the command.
     *
     * @var string
     */
-   protected $description = 'Create the migration file';
+   protected $description = 'Create the entity file';
 
    /**
     * Execute the console command.
