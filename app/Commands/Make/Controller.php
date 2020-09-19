@@ -26,6 +26,7 @@ class Controller extends Command {
     * @return mixed
     */
    public function handle() {
+      
       $name = $this->option('name');
       while ($name === null || empty($name)) {
          $name = $this->ask("Enter the name of the controller");
