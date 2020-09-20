@@ -5,9 +5,13 @@ namespace App\Commands;
 use Illuminate\Support\Facades\File;
 use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
+use App\Traits\Foundation;
 
 class Test extends Command
 {
+
+   use Foundation;
+
 	/**
    * The signature of the command.
    *
@@ -29,17 +33,6 @@ class Test extends Command
    */
 	public function handle()
 	{
-      $primary = false;
-      $fields = ["primary", "type", "nullable", "unique", "default"];
-      $data = [];
-      while(true){
-         $newField = $this->ask("Add a field (default: yes)") ?? "yes";
-         if($newField === "yes"){
-            $this->info($newField);
-         } else {
-            break;
-         }
-      }
-
+      $this->info($this->getRootDirectory());
    }
 }

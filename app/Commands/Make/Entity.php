@@ -2,16 +2,19 @@
 
 namespace App\Commands\Make;
 
-use Illuminate\Support\Facades\File;
 use LaravelZero\Framework\Commands\Command;
+use App\Traits\Foundation;
 
 class Entity extends Command {
+
+    use Foundation;
+
    /**
     * The signature of the command.
     *
     * @var string
     */
-   protected $signature = 'make:entity {--table= : Name of the table you want to create}';
+   protected $signature = 'make:entity {--name= : Name of the entity you want to create}';
 
    /**
     * The description of the command.
@@ -26,57 +29,71 @@ class Entity extends Command {
     * @return mixed
     */
    public function handle() {
-      $table = $this->option('table');
-      while ($table === null || empty($table)) {
-         $table = $this->ask("Enter the name of the table you want to create");
+
+      $entity = $this->option('name');
+      while ($entity === null || empty($entity)) {
+         $entity = $this->ask("Enter the name of the entity you want to create");
       }
 
-      $argName = strtolower($table);
-      $tmpName = str_replace("migration", "", $argName);
+      $argName = strtolower($entity);
+      $tmpName = str_replace("entity", "", $argName);
 
       if (empty($tmpName)) {
-         $this->line("Invalid controller name : <error>FAILED !</error>");
+         $this->line("Invalid Entity name : <error>FAILED !</error>");
       } else {
-         $migrationName = ucfirst($tmpName) . "Migration";
-         $tableName = ucfirst($tmpName);
 
-         if (file_exists($this->getMigrationPath() . DIRECTORY_SEPARATOR . $migrationName . ".php")) {
-            $this->line("This migration already exists : <error>FAILED !</error>");
-         } else {
-            $migrationContent = str_replace("%Migration%", $migrationName, File::get($this->getTemplatePath() . DIRECTORY_SEPARATOR . "Migration.template"));
-            $migrationContent = str_replace("%TableName%", $tableName, $migrationContent);
+        $entityName = ucfirst($tmpName);
+        $fields = [];
+        $continue = true;
+        $fieldNames = [];
+        $index = 0;
+        $types = ["boolean", "char", "date", "dateTime", "float", "integer", "longText", "tinyInteger", "string", "text"];
 
-            File::put($this->getMigrationPath() . DIRECTORY_SEPARATOR . $migrationName . ".php", $migrationContent);
-            $this->line("Migration created successfully : <info>OK !</info>");
-         }
-      }
+        while($continue){
+            $fieldName = strtolower($this->ask("Name of the field"));
+            while(in_array($fieldName, $fieldNames) || empty($fieldName)){
+                if(in_array($fieldName, $fieldNames)) $this->error("This field already exists");
+                if(empty($fieldName)) $this->error("Empty field are invalid");
+
+                $fieldName = strtolower($this->ask("Enter a valid field name"));
+            }
+            $fieldNames[] = $fieldName;
+            $fields[$index]["field"] = $fieldName;
+
+            $type = strtolower($this->ask("What's the type of the field"));
+            while(!in_array($type, $types)){
+                $this->info("The must be in : boolean, char, date, dateTime, float, integer, longText, tinyInteger, string, text");
+                $type = strtolower($this->ask("Enter the type of the field"));
+            }
+            $fields[$index]["type"] = $type;
+            
+            $nullable = strtolower($this->ask("Can this field be nullable (y/n)"));
+            while(!in_array($nullable, ["y", "n", "yes", "no"])){
+                $this->info("Invalid value");
+                $nullable = strtolower($this->ask("Can this field be nullable (y/n)"));
+            }
+            $fields[$index]["nullable"] = (in_array($nullable, ["y", "yes"]) ? true : false);
+
+            // $default = $this->ask("Default field value");
+            if($index === 3){
+                break;
+            }
+            $index++;
+        }
+
+        dd($fields);
+
+
+        // if (file_exists($this->getEntityPath() . DIRECTORY_SEPARATOR . $entityName . ".php")) {
+        //    $this->line("This entity already exists : <error>FAILED !</error>");
+        // } else {
+        //    $entityContent = str_replace("%Entity%", $entityName, File::get($this->getTemplatePath() . DIRECTORY_SEPARATOR . "Entity.template"));
+        //    $entityContent = str_replace("%TableName%", $tableName, $entityContent);
+
+        //    File::put($this->getEntityPath() . DIRECTORY_SEPARATOR . $entityName . ".php", $entityContent);
+        //    $this->line("Entity created successfully : <info>OK !</info>");
+        // }
+     }
    }
 
-   /**
-    * Get controllers path
-    *
-    * @return string
-    */
-   private function getMigrationPath(): string {
-      return $this->getRootDirectory() . DIRECTORY_SEPARATOR . "database" . DIRECTORY_SEPARATOR . "Migration";
-   }
-
-   /**
-    * Get templates path
-    *
-    * @return string
-    */
-   private function getTemplatePath(): string {
-      return $this->getRootDirectory() . DIRECTORY_SEPARATOR . "bin" . DIRECTORY_SEPARATOR . "templates";
-   }
-
-
-   /**
-    * Return the root directory
-    *
-    * @return string
-    */
-   private function getRootDirectory(): string {
-      return str_replace("/bin/bios/app/Commands/Make", "", str_replace("phar://", "", __DIR__));
-   }
 }

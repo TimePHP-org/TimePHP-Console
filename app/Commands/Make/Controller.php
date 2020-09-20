@@ -4,8 +4,12 @@ namespace App\Commands\Make;
 
 use Illuminate\Support\Facades\File;
 use LaravelZero\Framework\Commands\Command;
+use App\Traits\Foundation;
 
 class Controller extends Command {
+
+   use Foundation;
+
    /**
     * The signature of the command.
     *
@@ -49,32 +53,5 @@ class Controller extends Command {
             $this->line("Controller created successfully : <info>OK !</info>");
          }
       }
-   }
-
-   /**
-    * Get controllers path
-    *
-    * @return string
-    */
-   private function getControllerPath(): string {
-      return $this->getRootDirectory() . DIRECTORY_SEPARATOR . "App" . DIRECTORY_SEPARATOR . "Bundle" . DIRECTORY_SEPARATOR . "Controllers";
-   }
-
-   /**
-    * Get templates path
-    *
-    * @return string
-    */
-   private function getTemplatePath(): string {
-      return $this->getRootDirectory() . DIRECTORY_SEPARATOR . "bin" . DIRECTORY_SEPARATOR . "templates";
-   }
-
-   /**
-    * Return the root directory
-    *
-    * @return string
-    */
-   private function getRootDirectory(): string {
-      return str_replace("/bin/bios/app/Commands/Make", "", str_replace("phar://", "", __DIR__));
    }
 }
