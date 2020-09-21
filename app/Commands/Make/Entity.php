@@ -46,40 +46,86 @@ class Entity extends Command {
         $fields = [];
         $continue = true;
         $fieldNames = [];
-        $index = 0;
         $types = ["boolean", "char", "date", "dateTime", "float", "integer", "longText", "tinyInteger", "string", "text"];
+        $index = 0;
 
         while($continue){
+
+            //! field name
             $fieldName = strtolower($this->ask("Name of the field"));
             while(in_array($fieldName, $fieldNames) || empty($fieldName)){
                 if(in_array($fieldName, $fieldNames)) $this->error("This field already exists");
                 if(empty($fieldName)) $this->error("Empty field are invalid");
-
                 $fieldName = strtolower($this->ask("Enter a valid field name"));
             }
             $fieldNames[] = $fieldName;
             $fields[$index]["field"] = $fieldName;
 
+            //! field type
             $type = strtolower($this->ask("What's the type of the field"));
             while(!in_array($type, $types)){
-                $this->info("The must be in : boolean, char, date, dateTime, float, integer, longText, tinyInteger, string, text");
+                $this->line("<error>Invalid type</error>, must be in : boolean, char, date, dateTime, float, integer, longText, tinyInteger, string, text");
                 $type = strtolower($this->ask("Enter the type of the field"));
             }
             $fields[$index]["type"] = $type;
+
+
+            //! string or char length
+            if(in_array($type, ["string", "char"])){
+                $length = $this->ask("Enter the length for the field ($fieldName)");
+                while(!is_numeric($length)){
+                    $this->error("Invalid length");
+                    $length = $this->ask("Enter a valid length for the field ($fieldName)");
+                }
+                $fields[$index]["length"] = intval($length);
+            } else {
+                $fields[$index]["length"] = null;
+            }
+
+            //! unsigned
+            if(in_array($type, ["integer", "float"])){
+                $unsigned = strtolower($this->ask("Can this field be unsigned (y/n)"));
+                while(!in_array($unsigned, ["y", "n", "yes", "no"])){
+                    $this->error("Invalid value");
+                    $unsigned = strtolower($this->ask("Can this field be unsigned (y/n)"));
+                }
+                $fields[$index]["unsigned"] = (in_array($unsigned, ["y", "yes"]) ? true : false);
+            } else {
+                $fields[$index]["unsigned"] = null;
+            }
+
             
+            //! nullable
             $nullable = strtolower($this->ask("Can this field be nullable (y/n)"));
             while(!in_array($nullable, ["y", "n", "yes", "no"])){
-                $this->info("Invalid value");
+                $this->error("Invalid value");
                 $nullable = strtolower($this->ask("Can this field be nullable (y/n)"));
             }
             $fields[$index]["nullable"] = (in_array($nullable, ["y", "yes"]) ? true : false);
 
-            // $default = $this->ask("Default field value");
-            if($index === 3){
-                break;
+            //! default
+            $default = $this->ask("Do you want a default value (press enter to pass)");
+            $fields[$index]["default"] = ($default !== null) ? $default : null;
+
+            //! leave the loop
+            $keepAdding = strtolower($this->ask("Add a new field ? (y/n)"));
+            while(!in_array($nullable, ["y", "n", "yes", "no"])){
+                $this->error("Invalid value");
+                $keepAdding = strtolower($this->ask("Do you want to add a new field ? (y/n)"));
             }
+            if(in_array($keepAdding, ["n", "no"])){
+                $continue = false;
+            }
+
             $index++;
         }
+
+        $timestamped = strtolower($this->ask("Do you want this table to be timestamped (y/n)"));
+        while(!in_array($timestamped, ["y", "n", "yes", "no"])){
+            $this->error("Invalid value");
+            $timestamped = strtolower($this->ask("Do you want this table to be timestamped (y/n)"));
+        }
+        $fields["timestamped"] = (in_array($timestamped, ["y", "yes"]) ? true : false);
 
         dd($fields);
 
