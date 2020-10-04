@@ -47,7 +47,7 @@ class Controller extends Command {
          if (file_exists($this->getControllerPath() . DIRECTORY_SEPARATOR . $controllerName . ".php")) {
             $this->line("This controller already exists : <error>FAILED !</error>");
          } else {
-            $controllerContent = str_replace("%Controller%", $controllerName, File::get($this->getTemplatePath() . DIRECTORY_SEPARATOR . "Controller.template"));
+            $controllerContent = str_replace("%Controller%", $controllerName, $this->getControllerTemplate());
 
             File::put($this->getControllerPath() . DIRECTORY_SEPARATOR . $controllerName . ".php", $controllerContent);
             $this->line("Controller created successfully : <info>OK !</info>");

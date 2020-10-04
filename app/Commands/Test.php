@@ -33,6 +33,6 @@ class Test extends Command
    */
 	public function handle()
 	{
-      $this->info($this->getRootDirectory());
+      $this->info($this->getMigrationTemplate());
    }
 }

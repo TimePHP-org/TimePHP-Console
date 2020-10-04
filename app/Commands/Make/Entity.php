@@ -4,6 +4,7 @@ namespace App\Commands\Make;
 
 use LaravelZero\Framework\Commands\Command;
 use App\Traits\Foundation;
+use Illuminate\Support\Facades\File;
 
 class Entity extends Command {
 
@@ -127,18 +128,79 @@ class Entity extends Command {
         }
         $fields["timestamped"] = (in_array($timestamped, ["y", "yes"]) ? true : false);
 
-        dd($fields);
+        
+        // creation de l'entity
+        $entityTemplate = $this->getEntityTemplate();
+        $entityTemplate = str_replace("%Entity%", $entityName, $entityTemplate);
+        $entityTemplate = str_replace("%timestamped%", $fields["timestamped"] ? 'true' : 'false', $entityTemplate);
+
+        if($fields["timestamped"]){
+            $tmpTimestamped = "const CREATED_AT = 'createdAt';
+   const UPDATED_AT = 'updatedAt';";
+            $entityTemplate = str_replace("%ConstTimestamps%", $tmpTimestamped, $entityTemplate);
+        }
+
+        $tmpFields = array_column($fields, 'field');
+        $tmpFields = array_map(function($element) {
+            return "'$element'";
+        }, $tmpFields);
+
+        $entityTemplate = str_replace("%fields%", implode(", ", $tmpFields), $entityTemplate);
+
+        File::put($this->getEntityPath() . DIRECTORY_SEPARATOR . $entityName . ".php", $entityTemplate);
+        $this->line("Entity created successfully : <info>OK !</info>");
 
 
-        // if (file_exists($this->getEntityPath() . DIRECTORY_SEPARATOR . $entityName . ".php")) {
-        //    $this->line("This entity already exists : <error>FAILED !</error>");
-        // } else {
-        //    $entityContent = str_replace("%Entity%", $entityName, File::get($this->getTemplatePath() . DIRECTORY_SEPARATOR . "Entity.template"));
-        //    $entityContent = str_replace("%TableName%", $tableName, $entityContent);
+        // creation de la migration
+        $migrationName = $entityName."Migration";
+        $migrationTemplate = $this->getMigrationTemplate();
 
-        //    File::put($this->getEntityPath() . DIRECTORY_SEPARATOR . $entityName . ".php", $entityContent);
-        //    $this->line("Entity created successfully : <info>OK !</info>");
-        // }
+        $migrationTemplate = str_replace("%TableName%", $entityName, $migrationTemplate);
+        $migrationTemplate = str_replace("%Migration%", $migrationName, $migrationTemplate);
+
+        $tmpTimestamped = '$table->timestamp("createdAt")->default(Capsule::raw("CURRENT_TIMESTAMP"));
+            $table->timestamp("updatedAt")->default(Capsule::raw("CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP"));';
+        
+        $migrationTemplate = str_replace("%timestamps%", $fields["timestamped"] ? $tmpTimestamped : "", $migrationTemplate);
+
+        unset($fields["timestamped"]);
+
+        $tmp = "";
+
+        // "boolean", "char", "date", "dateTime", "float", "integer", "longText", "tinyInteger", "string", "text"
+        foreach($fields as $field){
+            $tmp .= '$table';
+            $tmp .= sprintf("->%s", $field["type"]);
+            if(in_array($field["type"], ["string", "char"]) && $field["length"] !== null){
+                $tmp .= sprintf("('%s', %d)", $field["field"], $field["length"]);
+            } else {
+                $tmp .= sprintf("('%s')", $field["field"]);
+            }
+
+            if(in_array($field["type"], ["integer", "float"]) && $field["unsigned"] !== null){
+                $tmp .= "->unsigned()";
+            }
+
+            if($field["nullable"]){
+                $tmp .= "->nullable()";
+            }
+
+            if($field["default"] !== null && in_array($field["type"], ["string", "char"])){
+                $tmp .= sprintf("->default('%s')", $field["default"]);
+            } else if($field["default"] !== null && in_array($field["type"], ["integer", "float"])){
+                $tmp .= sprintf("->default(%d)", $field["default"]);
+            }
+
+            $tmp .= ";
+            ";
+        }
+
+        $migrationTemplate = str_replace("%fields%", $tmp, $migrationTemplate);
+
+        File::put($this->getMigrationPath() . DIRECTORY_SEPARATOR . $migrationName . ".php", $migrationTemplate);
+        $this->line("Migration created successfully : <info>OK !</info>\n");
+        $this->line("Use <info>migration:up</info> to create the $entityName table in your database");
+        $this->line("Use <info>migration:down</info> to delete the $entityName table in your database");
      }
    }
 
