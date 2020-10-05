@@ -1,18 +1,21 @@
 {
-    "name": "laravel-zero/laravel-zero",
-    "description": "The Laravel Zero Framework.",
-    "keywords": ["framework", "laravel", "laravel zero", "console", "cli"],
-    "homepage": "https://laravel-zero.com",
-    "type": "project",
-    "license": "MIT",
+    "name": "timephp/console",
+    "description": "Laravel-Zero CLI to TimePHP framework",
+    "keywords": ["framework", "laravel", "laravel zero", "console", "cli", "TimePHP"],
+    "homepage": "https://github.com/TimePHP-org/TimePHP-Console",
+    "type": "library",
+    "license": "GPL-3.0-or-later",
     "support": {
-        "issues": "https://github.com/laravel-zero/laravel-zero/issues",
-        "source": "https://github.com/laravel-zero/laravel-zero"
+        "email": "timephp.org@gmail.com",
+        "docs": "https://timephp-org.github.io/TimePHP-Docs/#/",
+        "issues": "https://github.com/TimePHP-org/TimePHP-Console/issues",
+        "source": "https://github.com/TimePHP-org/TimePHP-Console"
     },
     "authors": [
         {
-            "name": "Nuno Maduro",
-            "email": "enunomaduro@gmail.com"
+            "name": "Robin B",
+            "email": "timephp.org@gmail.com",
+            "role": "developer"
         }
     ],
     "require": {
