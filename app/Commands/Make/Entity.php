@@ -150,6 +150,16 @@ class Entity extends Command {
         File::put($this->getEntityPath() . DIRECTORY_SEPARATOR . $entityName . ".php", $entityTemplate);
         $this->line("Entity created successfully : <info>OK !</info>");
 
+        // Repository
+
+        $repositoryTemplate = $this->getRepositoryTemplate();
+        $repositoryName = $entityName."Repository";
+        $repositoryTemplate = str_replace("%entity%", $entityName, $repositoryTemplate);
+        $repositoryTemplate = str_replace("%repository%", $repositoryName, $repositoryTemplate);
+        File::put($this->getRepositoryPath() . DIRECTORY_SEPARATOR . $repositoryName . ".php", $repositoryTemplate);
+        $this->line("Repository created successfully : <info>OK !</info>");
+
+
 
         // creation de la migration
         $migrationName = $entityName."Migration";
@@ -201,6 +211,8 @@ class Entity extends Command {
         $this->line("Migration created successfully : <info>OK !</info>\n");
         $this->line("Use <info>migration:up</info> to create the $entityName table in your database");
         $this->line("Use <info>migration:down</info> to delete the $entityName table in your database");
+
+
      }
    }
 

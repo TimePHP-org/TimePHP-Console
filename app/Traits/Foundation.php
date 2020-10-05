@@ -13,12 +13,12 @@ trait Foundation {
    }
 
    /**
-    * Get templates path
+    * Get Repository path
     *
     * @return string
     */
-   private function getTemplatePath(): string {
-      return $this->getRootDirectory() . DIRECTORY_SEPARATOR . "bin" . DIRECTORY_SEPARATOR . "templates";
+    private function getRepositoryPath(): string {
+      return $this->getRootDirectory() . DIRECTORY_SEPARATOR . "App" . DIRECTORY_SEPARATOR . "Bundle" . DIRECTORY_SEPARATOR . "Repository";
    }
 
    /**
@@ -194,5 +194,19 @@ class %Migration% extends Migration {
    }
 }';
 
+   }
+
+   private function getRepositoryTemplate(){
+      return '<?php
+
+namespace App\Bundle\Repository;
+
+use App\Bundle\Entity\%entity%;
+use Illuminate\Database\Capsule\Manager;
+
+class %repository% {
+
+
+}';
    }
 }
