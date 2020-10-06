@@ -8,7 +8,7 @@ trait Foundation {
     *
     * @return string
     */
-    private function getMigrationPath(): string {
+   private function getMigrationPath(): string {
       return $this->getRootDirectory() . DIRECTORY_SEPARATOR . "App" . DIRECTORY_SEPARATOR . "Migration";
    }
 
@@ -17,7 +17,7 @@ trait Foundation {
     *
     * @return string
     */
-    private function getRepositoryPath(): string {
+   private function getRepositoryPath(): string {
       return $this->getRootDirectory() . DIRECTORY_SEPARATOR . "App" . DIRECTORY_SEPARATOR . "Bundle" . DIRECTORY_SEPARATOR . "Repository";
    }
 
@@ -26,7 +26,7 @@ trait Foundation {
     *
     * @return string
     */
-    private function getControllerPath(): string {
+   private function getControllerPath(): string {
       return $this->getRootDirectory() . DIRECTORY_SEPARATOR . "App" . DIRECTORY_SEPARATOR . "Bundle" . DIRECTORY_SEPARATOR . "Controllers";
    }
 
@@ -35,8 +35,17 @@ trait Foundation {
     *
     * @return string
     */
-    private function getEntityPath(): string {
+   private function getEntityPath(): string {
       return $this->getRootDirectory() . DIRECTORY_SEPARATOR . "App" . DIRECTORY_SEPARATOR . "Bundle" . DIRECTORY_SEPARATOR . "Entity";
+   }
+
+   /**
+    * Get views path
+    *
+    * @return string
+    */
+   private function getViewPath(): string {
+      return $this->getRootDirectory() . DIRECTORY_SEPARATOR . "App" . DIRECTORY_SEPARATOR . "Bundle" . DIRECTORY_SEPARATOR . "Views" . DIRECTORY_SEPARATOR;
    }
 
    /**
@@ -209,4 +218,16 @@ class %repository% {
 
 }';
    }
+
+   private function getViewTemplate() {
+      return '{% extends "%layoutPath%template/layout.twig" %}
+{% block body %}
+
+   
+
+{% endblock %}';
+   }
+
+
+
 }
