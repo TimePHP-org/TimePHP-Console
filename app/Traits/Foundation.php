@@ -74,14 +74,14 @@ trait Foundation {
 namespace App\Bundle\Controllers;
       
 use App\Foundation\Router;
-use App\Foundation\Controller;
+use App\Foundation\AbstractController;
       
 /**
  * @category Controller
  * @package TimePHP
- * @subpackage Bundle\Controller
+ * @subpackage Bundle\Controllers
  */
-class %Controller% extends Controller
+class %Controller% extends AbstractController
 {
       
 }";
@@ -171,8 +171,7 @@ use TimePHP\Database\Migration;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Database\Schema\Blueprint;
 
-class %Migration% extends Migration {
-   
+class %Migration% extends AbstractMigration {
 
    /**
     * Create the correspondong table in the database

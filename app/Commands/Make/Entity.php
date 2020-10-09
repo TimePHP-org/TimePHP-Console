@@ -217,9 +217,6 @@ class Entity extends Command {
             File::put($this->getMigrationPath() . DIRECTORY_SEPARATOR . $migrationName . ".php", $migrationTemplate);
             $this->line("Migration created successfully : <info>OK !</info>\n");
 
-            $this->line("Add the following line to the <info>config/container/repository.php</info> file to use the $repositoryName in your controller :\n");
-            $this->line("<info>App\Bundle\Repository\\$repositoryName::class => \DI\create()</info>\n");
-
             $this->line("Use <info>migration:up</info> to create the $entityName table in your database");
             $this->line("Use <info>migration:down</info> to delete the $entityName table in your database");
 
