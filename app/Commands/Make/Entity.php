@@ -147,6 +147,8 @@ class Entity extends Command {
                $tmpTimestamped = "const CREATED_AT = 'createdAt';
    const UPDATED_AT = 'updatedAt';";
                $entityTemplate = str_replace("%ConstTimestamps%", $tmpTimestamped, $entityTemplate);
+            } else {
+               $entityTemplate = str_replace("%ConstTimestamps%", "", $entityTemplate);
             }
 
             $tmpFields = array_column($fields, 'field');
@@ -168,6 +170,8 @@ class Entity extends Command {
             File::put($this->getRepositoryPath() . DIRECTORY_SEPARATOR . $repositoryName . ".php", $repositoryTemplate);
             $this->line("Repository created successfully : <info>OK !</info>");
 
+
+            
             // creation de la migration
             $migrationName = $entityName . "Migration";
             $migrationTemplate = $this->getMigrationTemplate();
