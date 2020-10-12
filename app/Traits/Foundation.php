@@ -167,7 +167,7 @@ class %Entity% extends Model {
 
 namespace App\Migration;
 
-use TimePHP\Database\Migration;
+use TimePHP\Database\AbstractMigration;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Database\Schema\Blueprint;
 
