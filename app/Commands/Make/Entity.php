@@ -41,6 +41,8 @@ class Entity extends Command {
 
       if (empty($tmpName)) {
          $this->line("Invalid Entity name : <error>FAILED !</error>");
+      } elseif ($tmpName === "user" || $tmpName === "users") {
+         $this->line("<error>Error !</error> In order to create a user table or class, you need to use the <info>make:user</info> command");
       } else {
 
          $entityName = ucfirst($tmpName);
