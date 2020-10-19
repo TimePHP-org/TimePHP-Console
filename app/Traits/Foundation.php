@@ -147,7 +147,14 @@ class %Entity% extends Model {
     *
     * @var array
     */
-   protected $fillable = [%fields%];
+   protected $fillable = [\'uuid\', %fields%];
+
+   /**
+    * Indicates hidden properties
+    *
+    * @var array
+    */
+   protected $hidden = [\'password\', \'role\'];
 
 
    public static function boot(){
@@ -181,7 +188,7 @@ class %Migration% extends AbstractMigration {
    public function up(): void {
       if (!Capsule::schema()->hasTable("%TableName%")) {
          Capsule::schema()->create("%TableName%", function (Blueprint $table) {
-            $table->uuid("uuid");
+            $table->uuid("uuid")->unique();
 
             %fields%
             %timestamps%
