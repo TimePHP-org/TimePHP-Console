@@ -168,7 +168,7 @@ class User extends Command
             $fields["timestamped"] = (in_array($timestamped, ["y", "yes"]) ? true : false);
 
             // creation de l'entity
-            $entityTemplate = $this->getEntityTemplate();
+            $entityTemplate = $this->getUserTemplate();
             $entityTemplate = str_replace("%Entity%", $entityName, $entityTemplate);
             $entityTemplate = str_replace("%timestamped%", $fields["timestamped"] ? 'true' : 'false', $entityTemplate);
 
